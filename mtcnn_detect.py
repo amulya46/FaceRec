@@ -3,9 +3,11 @@ Tensorflow implementation of the mtcnn face detection algorithm
 
 Credit: DavidSandBerg for implementing this method on tensorflow
 '''
+
+
 from six import string_types, iteritems
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 import cv2
 import os
 
@@ -19,7 +21,7 @@ class MTCNNDetect(object):
         '''
         self.threshold = threshold
         self.factor = factor
-        self.scale_factor = scale_factor;
+        self.scale_factor = scale_factor
         with face_rec_graph.graph.as_default():
             print("Loading MTCNN Face detection model")
             self.sess = tf.Session()
@@ -51,6 +53,7 @@ class MTCNNDetect(object):
         # im: input image
         # minsize: minimum of faces' size
         if(self.scale_factor > 1):
+            print("img::::",img)
             img = cv2.resize(img,(int(len(img[0])/self.scale_factor), int(len(img)/self.scale_factor)))
         factor_count = 0
         total_boxes = np.empty((0, 9))
@@ -220,7 +223,14 @@ class Network(object):
         session: The current TensorFlow session
         ignore_missing: If true, serialized weights for missing layers are ignored.
         '''
+
+        np_load_old = np.load
+
+        np.load = lambda *a,**k: np_load_old(*a, allow_pickle=True, **k)
+
         data_dict = np.load(data_path, encoding='latin1').item()  # pylint: disable=no-member
+
+        np.load = np_load_old
 
         for op_name in data_dict:
             with tf.variable_scope(op_name, reuse=True):
@@ -329,7 +339,7 @@ class Network(object):
                     dim *= int(d)
                 feed_in = tf.reshape(inp, [-1, dim])
             else:
-                feed_in, dim = (inp, input_shape[-1].value)
+                feed_in, dim = (inp, input_shape[-1])
             weights = self.make_var('weights', shape=[dim, num_out])
             biases = self.make_var('biases', [num_out])
             op = tf.nn.relu_layer if relu else tf.nn.xw_plus_b

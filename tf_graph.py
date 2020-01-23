@@ -3,7 +3,7 @@ Load pretrain models and create a tensorflow session to run them
 
 @Author: David Vu
 '''
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 
 class FaceRecGraph(object):
@@ -11,4 +11,4 @@ class FaceRecGraph(object):
         '''
             There'll be more to come in this class
         '''
-        self.graph = tf.Graph();
+        self.graph = tf.Graph()
