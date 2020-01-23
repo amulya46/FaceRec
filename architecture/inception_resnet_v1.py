@@ -23,8 +23,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import tensorflow as tf
-import tensorflow.contrib.slim as slim
+import tensorflow.compat.v1 as tf
+#import tensorflow.contrib.slim as slim
 
 
 # Inception-Renset-A
@@ -133,7 +133,7 @@ def reduction_b(net):
 
 
 def inference(images, keep_probability, phase_train=True,
-              bottleneck_layer_size=128, weight_decay=0.0, reuse=None):
+              bottleneck_layer_size=512, weight_decay=0.0, reuse=None):  #changed
     batch_norm_params = {
         # Decay for the moving averages.
         'decay': 0.995,
@@ -157,7 +157,7 @@ def inference(images, keep_probability, phase_train=True,
 
 def inception_resnet_v1(inputs, is_training=True,
                         dropout_keep_prob=0.8,
-                        bottleneck_layer_size=128,
+                        bottleneck_layer_size=512,
                         reuse=None,
                         scope='InceptionResnetV1'):
     """Creates the Inception Resnet V1 model.
